@@ -2,7 +2,7 @@ package ru.neoflex.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RequestSetPrice{
+public class RequestChangePrice {
 
 	@SerializedName("price")
 	private Price price;
