@@ -1,15 +1,20 @@
 package ru.vtb.neoflex.autotests;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import ru.neoflex.controllers.RequestTestController;
 import ru.neoflex.dao.MySqlConnector;
 import ru.neoflex.model.CurrentTestimony;
 import ru.neoflex.model.RequestSaveTestimony;
 import ru.neoflex.model.ResponseSaveTestimony;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+
+import static ru.vtb.neoflex.autotests.TestBase.validRequest;
 
 public class SaveTestimonyTest {
     String saveTestimonyURI = "http://localhost:8080/services/testimony/save";
@@ -27,16 +32,23 @@ public class SaveTestimonyTest {
         return requestSaveTestimony;
     }
 
-    @Test
-    public void checkCodeSuccessTest() {
-        int actualStatusCode = RequestTestController.getRequestCode(saveTestimonyURI, createBodyForRequestSaveTestimony());
+    public static Iterator<Object[]> dataRead() throws IOException {
+        String requestFile = "src/test/resources/SaveTestimonyTest.json";
+        return validRequest(requestFile);
+    }
+
+    @MethodSource("dataRead")
+    @ParameterizedTest
+    public void checkCodeSuccessTest(RequestSaveTestimony requestSaveTestimony) {
+        int actualStatusCode = RequestTestController.getRequestCode(saveTestimonyURI, requestSaveTestimony);
 
         Assertions.assertEquals(200, actualStatusCode);
     }
 
-    @Test
-    public void checkFaultCodeSuccessTest() throws SQLException {
-        ResponseSaveTestimony responseSaveTestimony = RequestTestController.getResponseBodySave(saveTestimonyURI, createBodyForRequestSaveTestimony());
+    @MethodSource("dataRead")
+    @ParameterizedTest
+    public void checkFaultCodeSuccessTest(RequestSaveTestimony requestSaveTestimony) throws SQLException {
+        ResponseSaveTestimony responseSaveTestimony = RequestTestController.getResponseBodySave(saveTestimonyURI, requestSaveTestimony);
         String resultCode = responseSaveTestimony.getFaultcode().getResultCode();
         String resultText = responseSaveTestimony.getFaultcode().getResultText();
         Assertions.assertEquals("0", resultCode);
@@ -49,11 +61,11 @@ public class SaveTestimonyTest {
             double hotWater = expectedResult.getInt("hotWater");
             double gas = expectedResult.getInt("gas");
             double electricity = expectedResult.getInt("electricity");
-            Assertions.assertEquals(date, createBodyForRequestSaveTestimony().getDate());
-            Assertions.assertEquals(coldWater, createBodyForRequestSaveTestimony().getCurrentTestimony().getColdWater());
-            Assertions.assertEquals(hotWater, createBodyForRequestSaveTestimony().getCurrentTestimony().getHotWater());
-            Assertions.assertEquals(gas, createBodyForRequestSaveTestimony().getCurrentTestimony().getGas());
-            Assertions.assertEquals(electricity, createBodyForRequestSaveTestimony().getCurrentTestimony().getElectricity());
+            Assertions.assertEquals(date, requestSaveTestimony.getDate());
+            Assertions.assertEquals(coldWater, requestSaveTestimony.getCurrentTestimony().getColdWater());
+            Assertions.assertEquals(hotWater, requestSaveTestimony.getCurrentTestimony().getHotWater());
+            Assertions.assertEquals(gas, requestSaveTestimony.getCurrentTestimony().getGas());
+            Assertions.assertEquals(electricity, requestSaveTestimony.getCurrentTestimony().getElectricity());
         }
     }
 }
