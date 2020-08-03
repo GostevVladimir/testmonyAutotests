@@ -13,6 +13,7 @@ public class TestBase {
     @BeforeEach
     public void setUp() throws Exception {
         app.init();
+        app.getMainPage().clickSend();
     }
 
     @AfterEach
