@@ -53,19 +53,23 @@ public class SaveTestimonyTest {
         String resultText = responseSaveTestimony.getFaultcode().getResultText();
         Assertions.assertEquals("0", resultCode);
         Assertions.assertEquals("success", resultText);
-
-        ResultSet expectedResult = MySqlConnector.selectAllFromBilling(createBodyForRequestSaveTestimony().getDate());
+        String date = null;
+        double coldWater = 0;
+        double hotWater = 0;
+        double gas = 0;
+        double electricity = 0;
+        ResultSet expectedResult = MySqlConnector.selectAllFromBilling(requestSaveTestimony.getDate());
         while (expectedResult.next()) {
-            String date = expectedResult.getString("currentmonth");
-            double coldWater = expectedResult.getInt("coldWater");
-            double hotWater = expectedResult.getInt("hotWater");
-            double gas = expectedResult.getInt("gas");
-            double electricity = expectedResult.getInt("electricity");
-            Assertions.assertEquals(date, requestSaveTestimony.getDate());
-            Assertions.assertEquals(coldWater, requestSaveTestimony.getCurrentTestimony().getColdWater());
-            Assertions.assertEquals(hotWater, requestSaveTestimony.getCurrentTestimony().getHotWater());
-            Assertions.assertEquals(gas, requestSaveTestimony.getCurrentTestimony().getGas());
-            Assertions.assertEquals(electricity, requestSaveTestimony.getCurrentTestimony().getElectricity());
+             date = expectedResult.getString("currentmonth");
+             coldWater = expectedResult.getInt("coldWater");
+             hotWater = expectedResult.getInt("hotWater");
+             gas = expectedResult.getInt("gas");
+             electricity = expectedResult.getInt("electricity");
         }
+        Assertions.assertEquals(date, requestSaveTestimony.getDate());
+        Assertions.assertEquals(coldWater, requestSaveTestimony.getCurrentTestimony().getColdWater());
+        Assertions.assertEquals(hotWater, requestSaveTestimony.getCurrentTestimony().getHotWater());
+        Assertions.assertEquals(gas, requestSaveTestimony.getCurrentTestimony().getGas());
+        Assertions.assertEquals(electricity, requestSaveTestimony.getCurrentTestimony().getElectricity());
     }
 }
