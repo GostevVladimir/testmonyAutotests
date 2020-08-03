@@ -37,4 +37,15 @@ public class BasePage {
         waitForElementPresent(element, driver);
         return element.getText();
     }
+
+    protected void inputText(WebElement locator, String text) {
+        click(locator);
+        if (text != null) {
+            String existingText = locator.getAttribute("value");
+            if (!text.equals(existingText)) {
+                locator.clear();
+                locator.sendKeys(text);
+            }
+        }
+    }
 }
