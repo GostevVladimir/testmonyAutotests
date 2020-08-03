@@ -6,7 +6,11 @@
 
     <groupId>ru.neoflex.vtb.autotests</groupId>
     <artifactId>testmonyAutotests</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
+    <modules>
+        <module>testimonyAutotestUI</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
